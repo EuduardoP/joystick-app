@@ -67,7 +67,7 @@ export default function RCCarController() {
   };
 
   // Function to handle joystick input
-  const handleRotationChange = (x: number, y: number) => {
+  const handleRotationChange = (x: number) => {
     setRotationValue(x)
     sendControlsData({
       rotation: x,
@@ -80,7 +80,7 @@ export default function RCCarController() {
     });
   }
 
-  const handleMovementChange = (x: number, y: number) => {
+  const handleMovementChange = (y: number) => {
     setMovementValue(y)
     sendControlsData({
       rotation: rotationValue,

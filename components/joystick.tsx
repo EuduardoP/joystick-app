@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 interface Position {
@@ -18,7 +18,6 @@ interface JoystickProps {
 }
 
 export function Joystick({
-  label,
   onDirectionChange,
   horizontal = true,
   vertical = true,
@@ -42,7 +41,7 @@ export function Joystick({
     onDirectionChange(directionX, directionY)
   }, [directionX, directionY, onDirectionChange])
 
-  const updateJoystickPosition = (clientX: number, clientY: number) => {
+  const updateJoystickPosition = useCallback((clientX: number, clientY: number) => {
     if (!joystickRef.current) return
 
     const rect = joystickRef.current.getBoundingClientRect()
@@ -62,7 +61,7 @@ export function Joystick({
     }
 
     setPosition({ x: deltaX, y: deltaY })
-  }
+  }, [horizontal, vertical, maxDistance])
 
   const resetJoystick = () => {
     setActive(false)
@@ -143,7 +142,7 @@ export function Joystick({
       document.removeEventListener("touchend", handleTouchEnd)
       document.removeEventListener("touchcancel", handleTouchEnd)
     }
-  }, [active, touchId, horizontal, vertical])
+  }, [active, touchId, updateJoystickPosition])
 
   // Mouse event handlers for desktop
   useEffect(() => {
@@ -192,7 +191,7 @@ export function Joystick({
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [active, id, horizontal, vertical, touchId])
+  }, [active, touchId, id, updateJoystickPosition])
 
   return (
     <div
